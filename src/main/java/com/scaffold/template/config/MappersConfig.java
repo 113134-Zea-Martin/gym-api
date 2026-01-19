@@ -11,8 +11,7 @@ import org.modelmapper.ModelMapper;
 public class MappersConfig {
     @Bean
     public ModelMapper moddelMapper(){
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper;
+        return new ModelMapper();
     }
 
     @Bean("mergerMapper")
