@@ -90,7 +90,7 @@ public class AuthServiceImpl implements AuthService {
             // 1. Buscar en tu DB si existe un usuario con ese 'email'.
             if (userRepository.findByEmail(email) != null) {
                 // Usuario ya existe, proceder a login
-                throw new Exception("User with email " + email + " already exists");
+                return modelMapper.map(userRepository.findByEmail(email), User.class);
             } else {
                 // 2. Si NO existe:
                 //    - Crear nuevo usuario en tu DB con ese email y nombre.
@@ -114,5 +114,23 @@ public class AuthServiceImpl implements AuthService {
         } else {
             throw new Exception("Token de Google inválido.");
         }
+    }
+
+    @Override
+    public User loginLocalUser(String email, String password) {
+        log.info("Attempting to log in user with email {}", email);
+        UserEntity userEntity = userRepository.findByEmail(email);
+        if (userEntity == null) {
+            log.warn("User with email {} not found", email);
+            throw new IllegalArgumentException("Invalid email or password");
+        }
+
+        if (!passwordEncoder.matches(password, userEntity.getPassword())) {
+            log.warn("Invalid password for user with email {}", email);
+            throw new IllegalArgumentException("Invalid email or password");
+        }
+
+        log.info("User with email {} logged in successfully", email);
+        return modelMapper.map(userEntity, User.class);
     }
 }

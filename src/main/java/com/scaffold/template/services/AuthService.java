@@ -8,4 +8,6 @@ public interface AuthService {
     User registerLocalUser(String email, String password);
 
     User registrarConGoogle(String idTokenString) throws Exception;
+
+    User loginLocalUser(String email, String password);
 }
